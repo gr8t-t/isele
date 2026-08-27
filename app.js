@@ -567,16 +567,30 @@ async function loadRvcUrl() {
 
 // ─── VOICE (single: Gleen Cook — Voice 2.0 / w-okada slot 9) ─────────────────────
 async function loadVoices() {
-  voices = [{
-    id: 'gleen',
-    name: 'Gleen Cook',
-    description: 'Realtime voice',
-    folderName: 'gleencook',
-    wokadaSlot: 9,
-    defaultPitch: 0,
-    isPublic: true,
-    unlocked: true
-  }];
+  voices = [
+    {
+      id: 'gleen',
+      name: 'Gleen Cook',
+      description: 'Realtime voice',
+      folderName: 'gleencook',
+      wokadaSlot: 9,
+      previewUrl: 'previews/gleencook.mp3',
+      defaultPitch: 0,
+      isPublic: true,
+      unlocked: true
+    },
+    {
+      id: 'sarah',
+      name: 'Sarah Miller',
+      description: 'Realtime voice',
+      folderName: 'sarahmiller',
+      wokadaSlot: 6,
+      previewUrl: 'previews/sarahmiller.mp3',
+      defaultPitch: 0,
+      isPublic: true,
+      unlocked: true
+    }
+  ];
   selectedVoice = voices[0];
   renderVoices();
 }
