@@ -2,7 +2,10 @@
 // The browser reads it (get_url); the START launcher pushes it (set_url) each run.
 import Redis from 'ioredis';
 
-const redis = new Redis(process.env.REDIS_URL);
+// Accept whichever Redis URL is present — a manual REDIS_URL, or the one Vercel's
+// Upstash/KV storage integration injects (KV_URL / UPSTASH_REDIS_URL).
+const REDIS_URL = process.env.REDIS_URL || process.env.KV_URL || process.env.UPSTASH_REDIS_URL || '';
+const redis = new Redis(REDIS_URL);
 const URL_KEY = 'isele_wokada_url';
 
 export default async function handler(req, res) {
