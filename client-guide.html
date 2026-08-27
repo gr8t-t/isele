@@ -1,0 +1,322 @@
+<title>Isele Setup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+  :root {
+    --ground:   #eef4f7;
+    --surface:  #ffffff;
+    --surface-2:#f4f8fa;
+    --ink:      #0f1b24;
+    --ink-soft: #47606d;
+    --ink-faint:#7c94a1;
+    --line:     #dbe6ec;
+    --accent:   #0e7490;
+    --accent-2: #0891b2;
+    --accent-soft:#e2f2f6;
+    --warn:     #b45309;
+    --warn-soft:#fbf1e2;
+    --warn-line:#e6cfa6;
+    --shadow:   0 1px 2px rgba(15,27,36,.05), 0 12px 30px -14px rgba(15,27,36,.18);
+  }
+  :root:not([data-theme="light"]) { }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:   #080e17;
+      --surface:  #0e1826;
+      --surface-2:#131f30;
+      --ink:      #e7eff4;
+      --ink-soft: #9db0bd;
+      --ink-faint:#61788a;
+      --line:     #22364a;
+      --accent:   #38bcd6;
+      --accent-2: #22d3ee;
+      --accent-soft:#0d2b34;
+      --warn:     #f0b25a;
+      --warn-soft:#2a2013;
+      --warn-line:#4b3a1c;
+      --shadow:   0 1px 2px rgba(0,0,0,.4), 0 16px 40px -18px rgba(0,0,0,.7);
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground:   #080e17;
+    --surface:  #0e1826;
+    --surface-2:#131f30;
+    --ink:      #e7eff4;
+    --ink-soft: #9db0bd;
+    --ink-faint:#61788a;
+    --line:     #22364a;
+    --accent:   #38bcd6;
+    --accent-2: #22d3ee;
+    --accent-soft:#0d2b34;
+    --warn:     #f0b25a;
+    --warn-soft:#2a2013;
+    --warn-line:#4b3a1c;
+    --shadow:   0 1px 2px rgba(0,0,0,.4), 0 16px 40px -18px rgba(0,0,0,.7);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: "Public Sans", system-ui, -apple-system, sans-serif;
+    font-size: 17px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 680px; margin: 0 auto; padding: 0 22px 96px; }
+
+  /* Header */
+  header { padding: 64px 0 40px; }
+  .mark {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 46px; height: 46px; border-radius: 12px;
+    background: linear-gradient(140deg, var(--accent-2), var(--accent));
+    color: #04222a; font-family: "Bricolage Grotesque", sans-serif; font-weight: 700;
+    font-size: 26px; box-shadow: var(--shadow);
+  }
+  .eyebrow {
+    margin: 22px 0 6px; font-size: 12.5px; font-weight: 600; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--accent);
+  }
+  h1 {
+    font-family: "Bricolage Grotesque", sans-serif; font-weight: 700;
+    font-size: clamp(34px, 7vw, 48px); line-height: 1.05; margin: 0 0 14px;
+    letter-spacing: -.01em; text-wrap: balance;
+  }
+  .lede { font-size: 18.5px; color: var(--ink-soft); margin: 0; max-width: 34em; }
+
+  /* Before-you-start card */
+  .prep {
+    margin: 34px 0 8px; background: var(--surface); border: 1px solid var(--line);
+    border-radius: 16px; padding: 20px 22px; box-shadow: var(--shadow);
+  }
+  .prep h2 { font-size: 13px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-faint);
+    font-family: "Public Sans"; font-weight: 700; margin: 0 0 12px; }
+  .prep ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+  .prep li { display: flex; gap: 11px; align-items: flex-start; font-size: 15.5px; color: var(--ink-soft); }
+  .prep li b { color: var(--ink); font-weight: 600; }
+  .dot { flex: none; width: 7px; height: 7px; border-radius: 50%; background: var(--accent-2); margin-top: 9px; }
+
+  /* Steps */
+  .steps { margin-top: 46px; display: grid; gap: 18px; }
+  .step {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 18px;
+    padding: 24px 24px 26px; box-shadow: var(--shadow); position: relative;
+  }
+  .step-head { display: flex; gap: 16px; align-items: baseline; }
+  .num {
+    flex: none; font-family: "Bricolage Grotesque", sans-serif; font-weight: 700;
+    font-size: 15px; color: var(--accent-2);
+    width: 30px; height: 30px; border-radius: 9px; border: 1.5px solid var(--line);
+    display: flex; align-items: center; justify-content: center; background: var(--surface-2);
+    align-self: center;
+  }
+  .step h3 {
+    font-family: "Bricolage Grotesque", sans-serif; font-weight: 600; font-size: 21px;
+    margin: 0; line-height: 1.15; letter-spacing: -.005em;
+  }
+  .step p { margin: 13px 0 0; color: var(--ink-soft); }
+  .step p:first-of-type { margin-top: 15px; }
+  .step .body { padding-left: 46px; }
+  strong { color: var(--ink); font-weight: 600; }
+  .chip {
+    font-family: "IBM Plex Mono", monospace; font-size: .84em; font-weight: 500;
+    background: var(--accent-soft); color: var(--accent); padding: 2px 7px; border-radius: 6px;
+    white-space: nowrap;
+  }
+
+  /* Callout (the "this is normal" warnings) */
+  .note {
+    margin-top: 16px; background: var(--warn-soft); border: 1px solid var(--warn-line);
+    border-radius: 12px; padding: 14px 16px; font-size: 15px; color: var(--ink);
+  }
+  .note .tag { display: block; font-size: 12px; font-weight: 700; letter-spacing: .06em;
+    text-transform: uppercase; color: var(--warn); margin-bottom: 5px; }
+  .note b { font-weight: 600; }
+
+  /* Dialog mockups */
+  .mock {
+    margin-top: 18px; border-radius: 12px; overflow: hidden; border: 1px solid var(--line);
+    background: var(--surface-2); font-size: 14px; box-shadow: var(--shadow);
+  }
+  .mock .bar { display: flex; align-items: center; gap: 8px; padding: 9px 13px; background: var(--surface);
+    border-bottom: 1px solid var(--line); font-weight: 600; font-size: 13px; color: var(--ink-soft); }
+  .mock .bar .lights { display: flex; gap: 6px; }
+  .mock .bar .lights i { width: 10px; height: 10px; border-radius: 50%; background: var(--line); display: block; }
+  .mock .content { padding: 16px 16px 18px; }
+  .mock .content .big { font-family: "Bricolage Grotesque"; font-size: 16px; font-weight: 600; margin: 0 0 6px; }
+  .mock .content .sub { color: var(--ink-soft); font-size: 13.5px; margin: 0 0 14px; }
+  .mock .row { display: flex; gap: 9px; justify-content: flex-end; align-items: center; }
+  .mock .link { color: var(--accent); font-weight: 600; margin-right: auto; text-decoration: underline; font-size: 13.5px; }
+  .btn { border-radius: 7px; padding: 7px 14px; font-size: 13.5px; font-weight: 600; border: 1px solid var(--line);
+    background: var(--surface); color: var(--ink-soft); font-family: inherit; }
+  .btn.go { background: var(--accent); border-color: var(--accent); color: #04222a; }
+  .mock .check { display: flex; gap: 9px; align-items: center; padding: 7px 0; color: var(--ink-soft); font-size: 14px; }
+  .mock .check span.box { width: 16px; height: 16px; border-radius: 4px; border: 1.5px solid var(--accent);
+    background: var(--accent-soft); flex: none; position: relative; }
+  .mock .check span.box::after { content: "✓"; position: absolute; inset: -2px 0 0 1.5px; font-size: 12px; color: var(--accent); font-weight: 700; }
+  .console { background: #0a0f14; border-color: #0a0f14; }
+  .console .strip { font-family: "IBM Plex Mono", monospace; font-size: 12.5px; color: #8fe6f2;
+    padding: 15px 16px; line-height: 1.7; }
+  .console .strip .dim { color: #4d6b73; }
+
+  /* Everyday use + FAQ */
+  .section-label { margin: 52px 0 4px; font-size: 12.5px; font-weight: 600; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--accent); }
+  .daily { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 16px; }
+  .daily .card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+    padding: 18px 18px; box-shadow: var(--shadow); }
+  .daily .card .k { font-family: "Bricolage Grotesque"; font-weight: 600; font-size: 16px; margin: 0 0 5px; }
+  .daily .card p { margin: 0; font-size: 14.5px; color: var(--ink-soft); }
+  @media (max-width: 520px) { .daily { grid-template-columns: 1fr; } }
+
+  .faq { margin-top: 18px; border-top: 1px solid var(--line); }
+  .faq details { border-bottom: 1px solid var(--line); }
+  .faq summary { cursor: pointer; padding: 16px 2px; font-weight: 600; font-size: 16px;
+    list-style: none; display: flex; justify-content: space-between; gap: 12px; color: var(--ink); }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after { content: "+"; color: var(--accent); font-weight: 700; font-size: 20px; line-height: 1; }
+  .faq details[open] summary::after { content: "–"; }
+  .faq p { margin: 0 2px 18px; color: var(--ink-soft); font-size: 15.5px; }
+
+  footer { margin-top: 54px; text-align: center; color: var(--ink-faint); font-size: 13.5px; }
+  a { color: var(--accent); }
+  :focus-visible { outline: 2px solid var(--accent-2); outline-offset: 2px; border-radius: 4px; }
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="mark">✦</span>
+    <p class="eyebrow">Setup Guide</p>
+    <h1>Getting Isele running on your laptop</h1>
+    <p class="lede">A one-time setup, then it's a single double-click whenever you want it. No installing, no settings — just follow these steps in order. Takes about 10 minutes.</p>
+  </header>
+
+  <div class="prep">
+    <h2>Before you start</h2>
+    <ul>
+      <li><span class="dot"></span><span>The <b>download link</b> and your <b>password</b> — both sent to you separately.</span></li>
+      <li><span class="dot"></span><span>Your laptop <b>plugged in</b> and on <b>Wi-Fi</b> (the download is large).</span></li>
+      <li><span class="dot"></span><span>About <b>15 minutes</b> for the first setup. After that, starting Isele takes seconds.</span></li>
+    </ul>
+  </div>
+
+  <div class="steps">
+
+    <div class="step">
+      <div class="step-head"><span class="num">1</span><h3>Download the file</h3></div>
+      <div class="body">
+        <p>Open the <strong>download link</strong> that was sent to you and save the file. It's called <span class="chip">Isele.zip</span> and it's big (about 5&nbsp;GB), so give it a few minutes on good Wi-Fi. It usually lands in your <strong>Downloads</strong> folder.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="num">2</span><h3>Unzip it</h3></div>
+      <div class="body">
+        <p>Find <span class="chip">Isele.zip</span>, <strong>right-click</strong> it, and choose <strong>Extract All…</strong> → <strong>Extract</strong>. This unpacks it into a normal folder called <strong>Isele</strong>. (Leave the folder where it is — don't run it from inside the zip.)</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="num">3</span><h3>Start Isele</h3></div>
+      <div class="body">
+        <p>Open the <strong>Isele</strong> folder and double-click <span class="chip">START Isele</span>. A black window will appear — that's normal, it's getting everything ready.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="num">4</span><h3>If you see a blue “Windows protected your PC” box</h3></div>
+      <div class="body">
+        <p>Windows shows this for anything not from its store. It's expected here — just click <strong>More info</strong>, then <strong>Run anyway</strong>.</p>
+        <div class="mock" role="img" aria-label="Mockup of the Windows SmartScreen dialog. Click More info, then Run anyway.">
+          <div class="bar"><span class="lights"><i></i><i></i><i></i></span>Windows protected your PC</div>
+          <div class="content">
+            <p class="big">Windows protected your PC</p>
+            <p class="sub">Microsoft Defender SmartScreen prevented an unrecognized app from starting.</p>
+            <div class="row">
+              <span class="link">More info</span>
+              <button class="btn go">Run anyway</button>
+              <button class="btn">Don't run</button>
+            </div>
+          </div>
+        </div>
+        <div class="note"><span class="tag">This is safe</span><b>“Run anyway” only appears after you click “More info.”</b> The app just isn't registered with Microsoft's store — nothing is wrong.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="num">5</span><h3>If Windows asks about the firewall</h3></div>
+      <div class="body">
+        <p>You may get a “Windows Security Alert” asking to allow network access. Leave the boxes ticked and click <strong>Allow access</strong>. This lets Isele reach the internet.</p>
+        <div class="mock" role="img" aria-label="Mockup of the Windows Firewall dialog. Keep the boxes ticked and click Allow access.">
+          <div class="bar"><span class="lights"><i></i><i></i><i></i></span>Windows Security Alert</div>
+          <div class="content">
+            <p class="big">Allow Isele to communicate on these networks</p>
+            <div class="check"><span class="box"></span>Private networks, such as my home or work network</div>
+            <div class="check"><span class="box"></span>Public networks (needed for Isele to connect)</div>
+            <div class="row" style="margin-top:12px;">
+              <button class="btn go">Allow access</button>
+              <button class="btn">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="num">6</span><h3>Wait about a minute</h3></div>
+      <div class="body">
+        <p>The black window sets everything up and then your browser opens to Isele automatically. <strong>The first start is the slowest</strong> (it's loading the voice) — later starts are quick.</p>
+        <div class="mock console" role="img" aria-label="Mockup of the Isele launcher window showing it is running.">
+          <div class="strip">
+            ISELE<br>
+            <span class="dim">Starting the voice engine…</span><br>
+            <span class="dim">Opening a secure tunnel…</span><br>
+            Connected.<br>
+            ================================================<br>
+            Isele is running.  Keep this window open.
+          </div>
+        </div>
+        <p><strong>Keep that black window open</strong> the whole time you're using Isele.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><span class="num">7</span><h3>Log in and you're done</h3></div>
+      <div class="body">
+        <p>On the Isele screen, type the <strong>password</strong> that was sent to you and press <strong>Enter</strong>. That's it — you're in and ready to go.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <p class="section-label">Every day after this</p>
+  <div class="daily">
+    <div class="card"><p class="k">To start</p><p>Open the <strong>Isele</strong> folder and double-click <span class="chip">START Isele</span>. No warnings this time.</p></div>
+    <div class="card"><p class="k">To stop</p><p>Close the black window. That shuts everything down cleanly.</p></div>
+  </div>
+
+  <p class="section-label">If something's not right</p>
+  <div class="faq">
+    <details>
+      <summary>The browser didn't open on its own</summary>
+      <p>Open your browser and go to <span class="chip">isele.vercel.app</span> yourself, then log in. The black window just needs to be running.</p>
+    </details>
+    <details>
+      <summary>The voice says “offline” or won't connect</summary>
+      <p>Give it a few more seconds after the black window says <strong>“Isele is running.”</strong> If it's still offline, close the black window and double-click <span class="chip">START Isele</span> again.</p>
+    </details>
+    <details>
+      <summary>The video is slow or laggy</summary>
+      <p>This depends on your internet speed, since the video is processed online. A stronger Wi-Fi connection helps most. Everything else can keep running normally.</p>
+    </details>
+    <details>
+      <summary>Nothing happens when I double-click START Isele</summary>
+      <p>Make sure you <strong>extracted</strong> the zip in step 2 and are opening the real <strong>Isele</strong> folder — not running it from inside the zip. Then try again.</p>
+    </details>
+  </div>
+
+  <footer>Isele · keep the launcher window open while you use it</footer>
+</div>

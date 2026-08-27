@@ -2,5 +2,5 @@
 # APP_URL        = the client's deployed Isele web app (their Vercel URL), no trailing slash
 # CONTROL_SECRET = must match the ISELE_CONTROL_SECRET env var set in that Vercel project
 
-APP_URL=https://REPLACE-ME.vercel.app
-CONTROL_SECRET=REPLACE-ME
+APP_URL=https://isele.vercel.app
+CONTROL_SECRET=e2jckY87oFNUf7NNRmHQlktzZfj5w_zX

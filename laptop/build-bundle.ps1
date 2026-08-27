@@ -30,7 +30,7 @@ New-Item -ItemType Directory -Force -Path $stage | Out-Null
 Write-Host 'Copying voice engine (w-okada)...' -ForegroundColor Cyan
 $wokStage = Join-Path $stage 'wokada'
 # /E all subdirs, /XD exclude these dir trees (copy model_dir separately, drop scratch)
-robocopy $WokadaDir $wokStage /E /NFL /NDL /NJH /NJS /NP `
+robocopy $WokadaDir $wokStage /E /R:1 /W:1 /NFL /NDL /NJH /NJS /NP /XF 'vcclient.log' `
   /XD (Join-Path $WokadaDir 'model_dir') (Join-Path $WokadaDir 'tmp_dir') (Join-Path $WokadaDir 'upload_dir') | Out-Null
 # just slot Gleen, without the .bak
 $slotSrc = Join-Path $WokadaDir "model_dir\$GleenSlot"
