@@ -1,0 +1,64 @@
+# Assembles the client ZIP: a self-contained "Isele" folder they unzip and run.
+# Prereqs on THIS machine:
+#   - laptop\isele-proxy.exe  (run build-proxy.ps1 first)
+#   - w-okada installed        (default path below; override with -WokadaDir)
+#   - cloudflared.exe          (default path below; override with -CloudflaredExe)
+#   - config.txt filled in     (APP_URL + CONTROL_SECRET for the client)
+#
+# Output: <Desktop>\Isele-dist\Isele\  and  <Desktop>\Isele.zip
+param(
+  [string]$WokadaDir      = 'C:\Users\USER\Downloads\vcclient_win_cuda_2.0.78-beta\dist\main',
+  [string]$CloudflaredExe = 'C:\Users\USER\cloudflared\cloudflared.exe',
+  [int]   $GleenSlot      = 9
+)
+$ErrorActionPreference = 'Stop'
+$root = $PSScriptRoot
+$desktop = [Environment]::GetFolderPath('Desktop')
+$stage = Join-Path $desktop 'Isele-dist\Isele'
+$zip   = Join-Path $desktop 'Isele.zip'
+
+function Need($path, $what) { if (-not (Test-Path $path)) { Write-Host "MISSING: $what -> $path" -ForegroundColor Red; exit 1 } }
+Need (Join-Path $root 'isele-proxy.exe') 'proxy exe (run build-proxy.ps1)'
+Need $CloudflaredExe 'cloudflared.exe'
+Need (Join-Path $WokadaDir 'main.exe') 'w-okada main.exe'
+Need (Join-Path $WokadaDir "model_dir\$GleenSlot\gleencook.pth") "Gleen model (slot $GleenSlot)"
+
+if (Test-Path (Join-Path $desktop 'Isele-dist')) { Remove-Item (Join-Path $desktop 'Isele-dist') -Recurse -Force }
+New-Item -ItemType Directory -Force -Path $stage | Out-Null
+
+# ── w-okada, minus the other voice slots / scratch dirs (keep only Gleen) ─────
+Write-Host 'Copying voice engine (w-okada)...' -ForegroundColor Cyan
+$wokStage = Join-Path $stage 'wokada'
+# /E all subdirs, /XD exclude these dir trees (copy model_dir separately, drop scratch)
+robocopy $WokadaDir $wokStage /E /NFL /NDL /NJH /NJS /NP `
+  /XD (Join-Path $WokadaDir 'model_dir') (Join-Path $WokadaDir 'tmp_dir') (Join-Path $WokadaDir 'upload_dir') | Out-Null
+# just slot Gleen, without the .bak
+$slotSrc = Join-Path $WokadaDir "model_dir\$GleenSlot"
+$slotDst = Join-Path $wokStage "model_dir\$GleenSlot"
+New-Item -ItemType Directory -Force -Path $slotDst | Out-Null
+Get-ChildItem $slotSrc -File | Where-Object { $_.Name -notlike '*.bak' } | ForEach-Object {
+  Copy-Item $_.FullName (Join-Path $slotDst $_.Name) -Force
+}
+# fresh log
+Remove-Item (Join-Path $wokStage 'vcclient.log') -Force -ErrorAction SilentlyContinue
+
+# ── the rest of the bundle ───────────────────────────────────────────────────
+Write-Host 'Copying tunnel, proxy, launcher...' -ForegroundColor Cyan
+Copy-Item $CloudflaredExe (Join-Path $stage 'cloudflared.exe') -Force
+Copy-Item (Join-Path $root 'isele-proxy.exe')  $stage -Force
+Copy-Item (Join-Path $root 'isele-launch.ps1') $stage -Force
+Copy-Item (Join-Path $root 'START Isele.bat')  $stage -Force
+Copy-Item (Join-Path $root 'config.txt')       $stage -Force
+Copy-Item (Join-Path $root 'proxy.py')         $stage -Force   # fallback if the exe is blocked
+
+Write-Host ''
+$cfg = Get-Content (Join-Path $stage 'config.txt') -Raw
+if ($cfg -match 'REPLACE-ME') { Write-Host '!! config.txt still has REPLACE-ME — edit it before sending to the client.' -ForegroundColor Yellow }
+
+# ── zip it ───────────────────────────────────────────────────────────────────
+Write-Host 'Zipping...' -ForegroundColor Cyan
+if (Test-Path $zip) { Remove-Item $zip -Force }
+Compress-Archive -Path (Join-Path $desktop 'Isele-dist\Isele') -DestinationPath $zip
+$mb = [math]::Round((Get-Item $zip).Length / 1MB, 0)
+Write-Host "Done -> $zip  (${mb} MB)" -ForegroundColor Green
+Write-Host "Folder: $stage" -ForegroundColor Green
