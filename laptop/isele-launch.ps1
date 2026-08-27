@@ -42,8 +42,11 @@ $cfLog  = Join-Path $logDir 'cloudflared.log'
 function Stop-Isele {
   Get-Process isele-proxy -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
   Get-Process cloudflared -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
-  # w-okada's exe is generically named 'main' — only stop the one inside THIS Isele folder
-  Get-Process main -ErrorAction SilentlyContinue | Where-Object { $_.Path -eq $wokExe } | Stop-Process -Force -ErrorAction SilentlyContinue
+  # w-okada = main.exe PLUS its voice-changer-native-client.exe workers (killing
+  # main does NOT kill the workers). Names are generic, so only stop the ones
+  # running from THIS Isele\wokada folder.
+  Get-Process main,voice-changer-native-client -ErrorAction SilentlyContinue |
+    Where-Object { $_.Path -like ($wokDir + '*') } | Stop-Process -Force -ErrorAction SilentlyContinue
 }
 
 if ($args.Count -ge 1 -and $args[0] -eq 'stop') {
