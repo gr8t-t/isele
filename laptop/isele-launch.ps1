@@ -38,6 +38,23 @@ $wokLog = Join-Path $logDir 'wokada.log'
 $proxyLog = Join-Path $logDir 'proxy.log'
 $cfLog  = Join-Path $logDir 'cloudflared.log'
 
+# ── Stop mode: `isele-launch.ps1 stop` shuts the engines down (STOP Isele.bat) ──
+function Stop-Isele {
+  Get-Process isele-proxy -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
+  Get-Process cloudflared -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
+  # w-okada's exe is generically named 'main' — only stop the one inside THIS Isele folder
+  Get-Process main -ErrorAction SilentlyContinue | Where-Object { $_.Path -eq $wokExe } | Stop-Process -Force -ErrorAction SilentlyContinue
+}
+
+if ($args.Count -ge 1 -and $args[0] -eq 'stop') {
+  Write-Host ''
+  Write-Host '   Stopping Isele...' -ForegroundColor Yellow
+  Stop-Isele
+  Write-Host '   Isele stopped. You can close this window.' -ForegroundColor Gray
+  Start-Sleep -Seconds 2
+  return
+}
+
 function Say($m, $c='Gray') { Write-Host $m -ForegroundColor $c }
 
 function Test-Http($url) {
@@ -132,8 +149,9 @@ if ($AppUrl) { Start-Process $AppUrl }
 
 Say ''
 Say '   ================================================' 'DarkCyan'
-Say '   Isele is running.  Keep this window open.' 'Cyan'
-Say '   Close it to stop everything.' 'DarkGray'
+Say '   Isele is running.  Keep this window open while' 'Cyan'
+Say '   you use it (you can minimise it).' 'Cyan'
+Say '   To stop Isele: double-click  STOP Isele' 'DarkGray'
 Say '   ================================================' 'DarkCyan'
 Say ''
 

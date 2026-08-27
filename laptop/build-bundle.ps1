@@ -55,10 +55,14 @@ Write-Host ''
 $cfg = Get-Content (Join-Path $stage 'config.txt') -Raw
 if ($cfg -match 'REPLACE-ME') { Write-Host '!! config.txt still has REPLACE-ME — edit it before sending to the client.' -ForegroundColor Yellow }
 
-# ── zip it ───────────────────────────────────────────────────────────────────
+# ── zip it (contents at ROOT so "Extract All" gives ONE clean Isele folder,
+#    not Isele\Isele — critical for a non-technical user) ──────────────────────
 Write-Host 'Zipping...' -ForegroundColor Cyan
 if (Test-Path $zip) { Remove-Item $zip -Force }
-Compress-Archive -Path (Join-Path $desktop 'Isele-dist\Isele') -DestinationPath $zip
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+[System.IO.Compression.ZipFile]::CreateFromDirectory(
+  (Join-Path $desktop 'Isele-dist\Isele'), $zip,
+  [System.IO.Compression.CompressionLevel]::Optimal, $false)
 $mb = [math]::Round((Get-Item $zip).Length / 1MB, 0)
 Write-Host "Done -> $zip  (${mb} MB)" -ForegroundColor Green
 Write-Host "Folder: $stage" -ForegroundColor Green
