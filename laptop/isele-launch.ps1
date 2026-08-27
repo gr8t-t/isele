@@ -82,9 +82,9 @@ if (-not (Get-Process main -ErrorAction SilentlyContinue | Where-Object { $_.Pat
 if (-not (Get-Process isele-proxy -ErrorAction SilentlyContinue) -and -not (Get-Process python -ErrorAction SilentlyContinue | Where-Object { $_.Path -eq $pyExe })) {
   if (Test-Path $proxyExe) {
     Say '   * Starting the Isele proxy...' 'Gray'
-    Start-Process -WindowStyle Hidden -FilePath cmd -ArgumentList '/c', "`"$proxyExe`" 8765 > `"$proxyLog`" 2>&1"
+    Start-Process -WindowStyle Hidden -FilePath cmd -ArgumentList '/c', "cd /d `"$root`" && `"$proxyExe`" 8765 > `"$proxyLog`" 2>&1"
   } elseif ((Test-Path $pyExe) -and (Test-Path $proxyPy)) {
-    Start-Process -WindowStyle Hidden -FilePath cmd -ArgumentList '/c', "`"$pyExe`" `"$proxyPy`" 8765 > `"$proxyLog`" 2>&1"
+    Start-Process -WindowStyle Hidden -FilePath cmd -ArgumentList '/c', "cd /d `"$root`" && `"$pyExe`" `"$proxyPy`" 8765 > `"$proxyLog`" 2>&1"
   } else {
     Say '   ! Isele proxy not found (need isele-proxy.exe or python\python.exe + proxy.py)' 'Red'
   }
@@ -109,7 +109,7 @@ if (-not (Get-Process cloudflared -ErrorAction SilentlyContinue)) {
   if (Test-Path $cfExe) {
     Say '   * Opening a secure tunnel...' 'Gray'
     if (Test-Path $cfLog) { Remove-Item $cfLog -Force -ErrorAction SilentlyContinue }
-    Start-Process -WindowStyle Hidden -FilePath cmd -ArgumentList '/c', "`"$cfExe`" tunnel --url http://127.0.0.1:8765 > `"$cfLog`" 2>&1"
+    Start-Process -WindowStyle Hidden -FilePath cmd -ArgumentList '/c', "cd /d `"$root`" && `"$cfExe`" tunnel --url http://127.0.0.1:8765 > `"$cfLog`" 2>&1"
   } else {
     Say "   ! cloudflared.exe not found at $cfExe" 'Red'
   }
