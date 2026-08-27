@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Isele</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%2306b6d4'/><text x='16' y='23' font-size='18' text-anchor='middle' fill='%2305323a' font-family='Arial' font-weight='bold'>I</text></svg>">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      background: var(--bg);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    .app-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 24px;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .app-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .app-logo .logo-icon {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+
+    .coin-chip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background: rgba(6,182,212,0.15);
+      border: 1px solid rgba(6,182,212,0.3);
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--accent2);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .coin-chip:hover {
+      background: rgba(6,182,212,0.25);
+      border-color: var(--accent);
+    }
+
+    .mode-badge {
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Main layout */
+    .app-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      overflow-y: auto;
+    }
+
+    .app-content {
+      padding: 20px 24px;
+      flex: 1;
+    }
+
+    /* Mode selector */
+    .mode-selector {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .mode-btn {
+      flex: 1;
+      min-width: 160px;
+      padding: 14px 16px;
+      background: var(--bg2);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      color: var(--text2);
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .mode-btn:hover {
+      border-color: var(--accent);
+      color: var(--text);
+    }
+
+    .mode-btn.active {
+      border-color: var(--accent);
+      background: rgba(6,182,212,0.1);
+      color: var(--text);
+    }
+
+    .mode-btn .mode-icon { font-size: 22px; }
+
+    .mode-btn .mode-info { display: flex; flex-direction: column; }
+    .mode-btn .mode-name { font-size: 14px; font-weight: 700; }
+    .mode-btn .mode-rate-text { display: none; }
+
+    /* Two-column layout */
+    .app-columns {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    /* Video-only mode: voice panel hidden, stream panel fills full width */
+    .app-columns.single-col {
+      grid-template-columns: 1fr;
+    }
+
+    /* Voice panel */
+    .voice-panel {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .panel-header {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text2);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .voices-list {
+      max-height: 420px;
+      overflow-y: auto;
+      padding: 8px;
+    }
+
+    .voice-card {
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 4px;
+    }
+
+    .voice-card:hover {
+      background: var(--bg3);
+      border-color: var(--border);
+    }
+
+    .voice-card.selected {
+      background: rgba(6,182,212,0.1);
+      border-color: var(--accent);
+    }
+
+    .voice-card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .voice-name {
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .voice-desc {
+      font-size: 11px;
+      color: var(--text2);
+      line-height: 1.4;
+    }
+
+    .voice-actions {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+      align-items: center;
+    }
+
+    .preview-btn {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 8px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 11px;
+      color: var(--text2);
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+
+    .preview-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent2);
+    }
+
+    .lock-icon {
+      font-size: 14px;
+      color: var(--text2);
+    }
+
+    .voice-empty {
+      padding: 32px 16px;
+      text-align: center;
+      color: var(--text2);
+      font-size: 13px;
+    }
+
+    /* Stream area */
+    .stream-panel {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .stream-area {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      padding: 16px;
+      min-height: 280px;
+    }
+
+    .video-box {
+      border-radius: 10px;
+      overflow: hidden;
+      background: #000;
+      position: relative;
+      aspect-ratio: 16/9;
+    }
+
+    .video-box video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .video-label {
+      position: absolute;
+      bottom: 8px;
+      left: 8px;
+      background: rgba(0,0,0,0.7);
+      color: #fff;
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    .video-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg3);
+      border-radius: 10px;
+      color: var(--text2);
+      font-size: 13px;
+      gap: 8px;
+      aspect-ratio: 16/9;
+    }
+
+    .video-placeholder .placeholder-icon { font-size: 36px; opacity: 0.5; }
+
+    /* Audio-only display */
+    .audio-display {
+      display: none;
+      grid-column: 1 / -1;
+      padding: 32px;
+    }
+
+    .audio-meters {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 40px;
+    }
+
+    .audio-meter {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .meter-icon { font-size: 48px; }
+
+    .level-bar {
+      width: 8px;
+      height: 80px;
+      background: var(--bg3);
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .level-fill {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      background: var(--green);
+      border-radius: 4px;
+      transition: height 0.1s;
+      height: 0%;
+    }
+
+    .level-fill.output { background: var(--accent2); }
+
+    .meter-label { font-size: 12px; color: var(--text2); font-weight: 600; }
+
+    .audio-arrow { font-size: 32px; color: var(--accent); }
+
+    /* Controls */
+    .controls-panel {
+      padding: 16px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: flex-end;
+    }
+
+    .control-group {
+      flex: 1;
+      min-width: 180px;
+    }
+
+    .control-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text2);
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .prompt-input {
+      width: 100%;
+    }
+
+    /* Bottom bar */
+    .bottom-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 24px;
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      flex-shrink: 0;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .status-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--text2);
+    }
+
+    .status-dot.streaming {
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green);
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .status-text {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text2);
+    }
+
+    .billing-counter {
+      display: none;
+      padding: 4px 10px;
+      background: rgba(6,182,212,0.15);
+      border: 1px solid rgba(6,182,212,0.3);
+      border-radius: 20px;
+      font-size: 12px;
+      color: var(--accent2);
+      font-weight: 600;
+    }
+
+    .stream-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Buy coins modal */
+    .coin-pkg-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .coin-pkg {
+      padding: 14px;
+      background: var(--bg3);
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+      position: relative;
+    }
+
+    .coin-pkg:hover, .coin-pkg.selected {
+      border-color: var(--accent);
+      background: rgba(6,182,212,0.08);
+    }
+
+    .coin-pkg .pkg-coins {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--accent2);
+    }
+
+    .coin-pkg .pkg-label {
+      font-size: 11px;
+      color: var(--text2);
+      margin-top: 2px;
+    }
+
+    .coin-pkg .pkg-price {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      margin-top: 6px;
+    }
+
+    .coin-pkg .featured-tag {
+      position: absolute;
+      top: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: #fff;
+      font-size: 9px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .network-tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 12px;
+      background: var(--bg3);
+      border-radius: 8px;
+      padding: 3px;
+    }
+
+    .network-tab {
+      flex: 1;
+      padding: 6px;
+      border: none;
+      background: transparent;
+      color: var(--text2);
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .network-tab.active {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .network-pane { display: none; }
+    .network-pane.active { display: block; }
+
+    /* Voice request modal */
+    .wa-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #25d366;
+      font-size: 13px;
+      text-decoration: none;
+    }
+
+    .wa-link:hover { color: #20b358; }
+
+    @media (max-width: 900px) {
+      .app-columns {
+        grid-template-columns: 1fr;
+      }
+      .voice-panel {
+        order: 2;
+      }
+      .stream-panel {
+        order: 1;
+      }
+      .stream-area {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .app-content { padding: 12px; }
+      .mode-selector { flex-direction: column; }
+      .mode-btn { min-width: unset; }
+      .app-header { padding: 10px 14px; gap: 8px; }
+      .bottom-bar { padding: 12px 14px; gap: 10px; }
+      .controls-panel { padding: 12px; gap: 12px; }
+      .control-group { min-width: 100%; }
+      .stream-area { padding: 12px; min-height: 0; gap: 12px; }
+      /* keep Start/Stop comfortably tappable */
+      .bottom-bar .btn { min-height: 44px; }
+    }
+
+    @media (max-width: 400px) {
+      .app-header { padding: 8px 10px; }
+      .panel-header { padding: 12px; }
+      #codeOverlay > div { padding: 24px 18px; }
+      #codeValue { font-size: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-left">
+      <span class="app-logo">
+        <div class="logo-icon">✦</div>
+        Isele
+      </span>
+      <span class="mode-badge badge-purple" id="modeBadge">Video Only</span>
+    </div>
+    <div class="header-right">
+      <button class="btn btn-ghost btn-sm" id="logoutBtn" onclick="logout()">Logout</button>
+    </div>
+  </header>
+
+  <!-- Main content -->
+  <main class="app-main">
+    <div class="app-content">
+
+      <!-- Mode selector -->
+      <div class="mode-selector" id="modeSelector" style="display:flex; align-items:center; gap:10px;">
+        <label for="modeSelect" style="font-size:13px; font-weight:600; color:var(--text2);">Mode</label>
+        <select id="modeSelect" class="form-input" style="max-width:300px; font-weight:600;" onchange="setMode(this.value)">
+          <option value="video">🎥 Video Only</option>
+          <option value="both">✨ Video + Voice</option>
+          <option value="audio">🎙 Voice Only</option>
+        </select>
+        <span id="modelSelectWrap" style="display:flex; align-items:center; gap:8px; margin-left:6px; padding-left:12px; border-left:1px solid var(--border);">
+          <label for="modelSelect" style="font-size:13px; font-weight:600; color:var(--text2);">AI Model</label>
+          <select id="modelSelect" class="form-input" style="max-width:170px; font-weight:600;" onchange="setVideoModel(this.value)" title="Lucy 2.5 is Decart's newest model (higher resolution). Lucy 2.1 is the older model. Pick before you press Start.">
+            <option value="lucy-2.5">Lucy 2.5 (new)</option>
+            <option value="lucy-2.1">Lucy 2.1</option>
+          </select>
+        </span>
+      </div>
+
+      <div class="app-columns">
+        <!-- Voice panel -->
+        <div class="voice-panel" id="voicePanel">
+          <!-- Isele runs Voice 2.0 only; engine controls hidden, kept for script refs -->
+          <div id="engineStatus" style="display:none;">
+            <button type="button" id="engineV1Btn" onclick="setEngine('v1')"></button>
+            <button type="button" id="engineV2Btn" onclick="setEngine('v2')"></button>
+            <span id="engStatusV1"></span><span id="engStatusV2"></span>
+          </div>
+          <div id="engineHint" style="display:none;">
+            <span id="engineHintText"></span>
+            <button id="v2GuideBtn" onclick="openV2Guide()"></button>
+          </div>
+          <div id="pitchControl" style="display:none; padding:10px 12px; border-bottom:1px solid var(--border);">
+            <label class="control-label" id="pitchLabel" style="font-size:11px; color:var(--text2);">Voice Pitch: 0</label>
+            <input type="range" id="pitchSlider" min="-12" max="12" value="0" step="1" style="width:100%;">
+            <div style="font-size:10px; color:var(--text2); margin-top:4px; line-height:1.5;">🎚 <strong style="color:var(--text);">Set this to match your voice.</strong> While talking, slide until it sounds right — deeper voice: slide up, higher: slide down.</div>
+          </div>
+          <div class="panel-header">Select Voice</div>
+          <div class="voices-list" id="voicesList">
+            <div class="voice-empty">
+              <div style="font-size:28px;margin-bottom:8px;">🎙</div>
+              Loading voices...
+            </div>
+          </div>
+        </div>
+
+        <!-- Stream panel -->
+        <div class="stream-panel">
+          <!-- Video stream area -->
+          <div class="stream-area" id="videoStreamArea">
+            <div class="video-box" id="inputVideoBox">
+              <div class="video-placeholder" id="inputPlaceholder">
+                <span class="placeholder-icon">📷</span>
+                <span>Camera Input</span>
+              </div>
+              <video id="inputVideo" autoplay muted playsinline style="display:none;"></video>
+              <span class="video-label">Input</span>
+            </div>
+            <div class="video-box" id="outputVideoBox">
+              <div class="video-placeholder" id="outputPlaceholder">
+                <span class="placeholder-icon">✨</span>
+                <span>AI Output</span>
+              </div>
+              <canvas id="outputCanvas" style="display:none; width:100%; height:100%; object-fit:cover;"></canvas>
+              <video id="outputVideo" autoplay playsinline style="display:none; width:100%; height:100%; object-fit:cover;"></video>
+              <span class="video-label">AI Output</span>
+              <button type="button" id="popoutBtn" title="Open AI output fullscreen in a new tab"
+                style="position:absolute; top:8px; right:8px; z-index:5; background:rgba(0,0,0,0.6); border:1px solid var(--border); color:var(--text); border-radius:8px; padding:6px 10px; font-size:12px; cursor:pointer;">⛶ Full Screen</button>
+            </div>
+          </div>
+
+          <!-- Audio-only display -->
+          <div class="audio-display" id="audioDisplay">
+            <div class="audio-meters">
+              <div class="audio-meter">
+                <div class="meter-icon">🎤</div>
+                <div class="level-bar">
+                  <div class="level-fill" id="micLevel"></div>
+                </div>
+                <div class="meter-label">Microphone</div>
+              </div>
+              <div class="audio-arrow">→</div>
+              <div class="audio-meter">
+                <div class="meter-icon">🔊</div>
+                <div class="level-bar">
+                  <div class="level-fill output" id="spkLevel"></div>
+                </div>
+                <div class="meter-label">Voice Output</div>
+              </div>
+            </div>
+            <p style="text-align:center; color:var(--text2); font-size:13px; margin-top:20px;" id="voiceStatusText">
+              Select a voice and press Start
+            </p>
+            <div id="audioPitchControl" style="display:none; max-width:520px; margin:40px auto 0; padding:0 20px;">
+              <label class="control-label" id="audioPitchLabel" style="display:block; text-align:center; font-size:15px; font-weight:600; margin-bottom:12px;">Voice Pitch: 0</label>
+              <input type="range" id="audioPitchSlider" min="-12" max="12" value="0" step="1" style="width:100%;">
+              <div style="text-align:center; font-size:13px; color:var(--text2); margin-top:12px; line-height:1.6;">🎚 <strong style="color:var(--text);">Set this to match your own voice</strong> — everyone's is different. While you talk, slide until the converted voice sounds right: deeper voice → slide up, higher → slide down.</div>
+            </div>
+          </div>
+
+          <!-- Controls -->
+          <div class="controls-panel">
+            <!-- Video sync delay (video+voice mode only) -->
+            <div class="control-group" id="delayControl" style="display:none;">
+              <label class="control-label" id="delayLabel">Video Delay: 0ms</label>
+              <input type="range" id="delaySlider" min="0" max="6000" value="0" step="50">
+              <div style="display:flex; justify-content:space-between; font-size:10px; color:var(--text2); margin-top:2px;">
+                <span>No delay</span>
+                <span>Drag right if audio lags behind</span>
+                <span>6000ms</span>
+              </div>
+            </div>
+
+            <!-- Presets (video modes) -->
+            <div class="control-group" id="presetControl" style="flex-basis:100%;">
+              <label class="control-label">Quick Presets</label>
+              <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                <button type="button" class="btn btn-secondary btn-sm preset-btn" data-prompt="Transform me into an anime character with large expressive eyes and vibrant hair. High quality animation style.">✦ Anime</button>
+                <button type="button" class="btn btn-secondary btn-sm preset-btn" data-prompt="Transform me into a cyberpunk character with neon face implants, chrome accessories, and futuristic urban style.">⚡ Cyber</button>
+                <button type="button" class="btn btn-secondary btn-sm preset-btn" data-prompt="Make me look photorealistic but enhance my features with cinematic lighting and natural skin texture.">◎ Real</button>
+              </div>
+            </div>
+
+            <!-- Prompt (video modes) -->
+            <div class="control-group" id="promptControl">
+              <label class="control-label">AI Prompt</label>
+              <input type="text" class="form-input prompt-input" id="promptInput"
+                placeholder="e.g. Transform me into the person in the reference image" value="Transform me into the person in the reference image. Follow my exact movements, pose and hand positions precisely. Do not add, invent or change any body or hand movements — only change my appearance, never my motion.">
+            </div>
+
+            <!-- Reference image upload (video modes) -->
+            <div class="control-group" id="referenceControl" style="flex-basis:100%;">
+              <label class="control-label">Reference Face Image (optional)</label>
+              <div id="uploadZone" style="border:1.5px dashed var(--border); border-radius:10px; padding:14px; text-align:center; cursor:pointer; position:relative; color:var(--text2); font-size:13px;">
+                <input type="file" id="imageUpload" accept="image/*" style="position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%;">
+                <strong style="color:var(--text);">Upload face image</strong> · JPG/PNG · drag &amp; drop or click
+              </div>
+              <div id="imagePreviewWrap" style="display:none; position:relative; margin-top:10px;">
+                <img id="imagePreview" alt="Reference" style="max-width:120px; border-radius:10px; display:block;">
+                <button type="button" id="removeImage" title="Remove" style="position:absolute; top:6px; left:96px; background:var(--bg3); border:1px solid var(--border); color:var(--red); border-radius:6px; width:26px; height:26px; cursor:pointer;">✕</button>
+              </div>
+
+              <label class="control-label" style="margin-top:14px; font-size:12px;">Background Image (optional)</label>
+              <div id="bgUploadZone" style="border:1.5px dashed var(--border); border-radius:10px; padding:12px; text-align:center; cursor:pointer; position:relative; color:var(--text2); font-size:12px;">
+                <input type="file" id="bgUpload" accept="image/*" style="position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%;">
+                <strong style="color:var(--text);">Upload background</strong> · changes the scene behind you
+              </div>
+              <div id="bgPreviewWrap" style="display:none; position:relative; margin-top:8px;">
+                <img id="bgPreview" alt="Background" style="max-width:120px; border-radius:10px; display:block;">
+                <button type="button" id="removeBg" title="Remove" style="position:absolute; top:6px; left:96px; background:var(--bg3); border:1px solid var(--border); color:var(--red); border-radius:6px; width:26px; height:26px; cursor:pointer;">✕</button>
+              </div>
+              <div style="font-size:11px; color:var(--text2); margin-top:6px; line-height:1.5;">Puts a new background behind your avatar. Needs a face image above too — we place your avatar into this scene automatically.</div>
+            </div>
+
+            <!-- Enhance toggle (video modes) -->
+            <div class="control-group" id="enhanceControl" style="min-width:120px; flex:0;">
+              <label class="control-label">Enhance</label>
+              <label class="toggle-wrap">
+                <span class="toggle">
+                  <input type="checkbox" id="enhanceToggle" checked>
+                  <span class="toggle-slider"></span>
+                </span>
+                <span style="font-size:13px;">On</span>
+              </label>
+            </div>
+
+            <!-- Apply button (video modes) -->
+            <div class="control-group" id="applyControl" style="flex:0; min-width:unset;">
+              <label class="control-label" style="visibility:hidden;">.</label>
+              <button class="btn btn-secondary btn-sm" onclick="applyVideoSettings()">Apply</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Bottom bar -->
+  <div class="bottom-bar">
+    <div class="status-section">
+      <div class="status-dot" id="statusDot"></div>
+      <span class="status-text" id="statusText">IDLE</span>
+      <div class="billing-counter" id="billingCounter">
+        ⏱ <span id="billingSecs">0</span>s
+      </div>
+      <span id="setupBadge" style="display:none; background:#f59e0b; color:#1a1a1a; font-weight:700; font-size:11px; padding:2px 8px; border-radius:6px; margin-left:8px;">SETUP MODE · FREE</span>
+    </div>
+    <div class="stream-controls">
+      <button class="btn btn-success" id="startBtn" onclick="startStream()">▶ Start</button>
+      <button class="btn btn-danger" id="stopBtn" onclick="stopStream()" disabled>■ Stop</button>
+    </div>
+  </div>
+
+  <!-- Voice Recorder Modal -->
+  <div class="modal-overlay hidden" id="recorderModal">
+    <div class="modal">
+      <div class="modal-header">
+        <span class="modal-title">🎙 Record &amp; Download</span>
+        <button class="modal-close" onclick="closeRecorder()">✕</button>
+      </div>
+      <p style="font-size:13px; color:var(--text2); margin-bottom:12px;">
+        Record up to 120 seconds, convert it to <strong id="recVoiceName">the selected voice</strong>, then download as MP3.
+        Costs <strong>0.3 coins/sec</strong> of recording.
+      </p>
+
+      <div id="recNoVoice" style="display:none; background:rgba(239,68,68,0.1); border:1px solid var(--red); border-radius:8px; padding:12px; font-size:13px; color:var(--red); margin-bottom:12px;">
+        Please select a voice first (close this and pick one from the list).
+      </div>
+
+      <div style="text-align:center; padding:14px 0;">
+        <div id="recTimer" style="font-family:monospace; font-size:34px; font-weight:700; color:var(--accent2); margin-bottom:6px;">0:00</div>
+        <div id="recHint" style="font-size:12px; color:var(--text2);">Max 2:00</div>
+      </div>
+
+      <div style="display:flex; gap:10px; margin-bottom:10px;">
+        <button class="btn btn-primary" id="recStartBtn" style="flex:1;" onclick="recStart()">● Record</button>
+        <button class="btn btn-secondary" id="recStopBtn" style="flex:1; display:none;" onclick="recStop()">■ Stop</button>
+      </div>
+
+      <div style="text-align:center; font-size:11px; color:var(--text2); margin-bottom:8px;">— or —</div>
+      <div style="margin-bottom:14px;">
+        <label for="recUploadInput" class="btn btn-secondary w-full" style="cursor:pointer; display:block; text-align:center;">⬆ Upload a recording to convert</label>
+        <input type="file" id="recUploadInput" accept="audio/*,.mp3,.wav,.m4a,.ogg" style="display:none;" onchange="if(this.files[0]){ recUploadFile(this.files[0]); this.value=''; }">
+      </div>
+
+      <!-- After recording -->
+      <div id="recReview" style="display:none;">
+        <div style="font-size:12px; color:var(--text2); margin-bottom:6px;">Your recording:</div>
+        <audio id="recOriginalAudio" controls style="width:100%; margin-bottom:12px;"></audio>
+        <button class="btn btn-primary w-full" id="recConvertBtn" onclick="recConvert()" style="margin-bottom:12px;">
+          Convert to Voice (<span id="recCost">0</span> coins)
+        </button>
+      </div>
+
+      <!-- After conversion -->
+      <div id="recResult" style="display:none;">
+        <div style="font-size:12px; color:var(--green); margin-bottom:6px;">✓ Converted:</div>
+        <audio id="recConvertedAudio" controls style="width:100%; margin-bottom:12px;"></audio>
+        <button class="btn btn-primary w-full" id="recDownloadBtn" onclick="recDownload()">⬇ Download MP3</button>
+        <button class="btn btn-ghost btn-sm w-full" onclick="recReset()" style="margin-top:8px;">Record Again</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Voice 2.0 Setup Guide Modal -->
+  <div class="modal-overlay hidden" id="v2GuideModal">
+    <div class="modal" style="max-width:480px;">
+      <div class="modal-header">
+        <span class="modal-title">Voice 2.0 ✦ Setup Guide</span>
+        <button class="modal-close" onclick="closeV2Guide()">✕</button>
+      </div>
+      <div style="padding:4px 16px 16px;">
+        <p style="font-size:13px; color:var(--text2); margin-bottom:18px; line-height:1.6;">
+          Voice 2.0 uses <strong style="color:var(--text);">w-okada</strong> — a free app that runs AI voice conversion directly on <em>your</em> GPU with ultra-low latency. One-time setup, then it's one click each time.
+        </p>
+
+        <!-- Step 1 -->
+        <div style="display:flex; gap:12px; margin-bottom:16px;">
+          <div style="min-width:28px; height:28px; border-radius:50%; background:var(--accent); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:#fff; flex-shrink:0;">1</div>
+          <div>
+            <div style="font-size:13px; font-weight:600; color:var(--text); margin-bottom:4px;">Download w-okada Voice Changer</div>
+            <div style="font-size:12px; color:var(--text2); margin-bottom:8px; line-height:1.5;">Free, open-source. Click the link, find the latest Windows release (.zip), download and extract it.</div>
+            <a href="https://github.com/w-okada/voice-changer/releases" target="_blank" rel="noopener" class="btn btn-secondary btn-sm" style="font-size:11px;">github.com/w-okada — Releases</a>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div style="display:flex; gap:12px; margin-bottom:16px;">
+          <div style="min-width:28px; height:28px; border-radius:50%; background:var(--accent); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:#fff; flex-shrink:0;">2</div>
+          <div>
+            <div style="font-size:13px; font-weight:600; color:var(--text); margin-bottom:4px;">Download VB-Cable (free virtual mic driver)</div>
+            <div style="font-size:12px; color:var(--text2); margin-bottom:8px; line-height:1.5;">This creates a virtual microphone on your PC so your converted voice goes to your calls — not your raw voice.</div>
+            <a href="https://vb-audio.com/Cable/" target="_blank" rel="noopener" class="btn btn-secondary btn-sm" style="font-size:11px;">vb-audio.com/Cable</a>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div style="display:flex; gap:12px; margin-bottom:16px;">
+          <div style="min-width:28px; height:28px; border-radius:50%; background:var(--accent); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:#fff; flex-shrink:0;">3</div>
+          <div>
+            <div style="font-size:13px; font-weight:600; color:var(--text); margin-bottom:4px;">Configure w-okada</div>
+            <div style="font-size:12px; color:var(--text2); line-height:1.6;">
+              Open w-okada, then set:<br>
+              <span style="color:var(--text);">Input →</span> Your real microphone<br>
+              <span style="color:var(--text);">Output →</span> <strong>CABLE Input (VB-Audio Virtual Cable)</strong><br>
+              Load a voice model and press <strong>Start</strong>.
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div style="display:flex; gap:12px; margin-bottom:18px;">
+          <div style="min-width:28px; height:28px; border-radius:50%; background:var(--accent); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:#fff; flex-shrink:0;">4</div>
+          <div>
+            <div style="font-size:13px; font-weight:600; color:var(--text); margin-bottom:4px;">Select VB-Cable as your microphone</div>
+            <div style="font-size:12px; color:var(--text2); line-height:1.6;">
+              In your browser (or Discord / Zoom / OBS),<br>
+              pick <strong style="color:var(--text);">"CABLE Output (VB-Audio Virtual Cable)"</strong> as the microphone.<br>
+              Everyone will now hear your w-okada converted voice!
+            </div>
+          </div>
+        </div>
+
+        <!-- GPU note -->
+        <div style="background:rgba(255,170,0,0.08); border:1px solid rgba(255,170,0,0.3); border-radius:8px; padding:12px; font-size:12px; color:var(--text2); margin-bottom:16px; line-height:1.6;">
+          <strong style="color:#ffaa00;">GPU Required:</strong> Voice 2.0 needs a dedicated graphics card for real-time AI processing. Works best with NVIDIA GTX 1060 / AMD RX 580 or better. Integrated graphics won't work.
+        </div>
+
+        <button class="btn btn-primary w-full" onclick="closeV2Guide()">Got it — I'm all set!</button>
+        <button class="btn btn-ghost btn-sm w-full" style="margin-top:8px;" onclick="setEngine('v1'); closeV2Guide();">Use Voice 1.0 instead (no download needed)</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+  <script src="app.js"></script>
+</body>
+</html>

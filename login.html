@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Isele</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%2306b6d4'/><text x='16' y='23' font-size='18' text-anchor='middle' fill='%2305323a' font-family='Arial' font-weight='bold'>I</text></svg>">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+    .login-card { width: 100%; max-width: 380px; text-align: center; }
+    .brand { display: inline-flex; align-items: center; gap: 10px; font-size: 26px; font-weight: 800; margin-bottom: 6px; }
+    .brand .mark {
+      width: 40px; height: 40px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex; align-items: center; justify-content: center; font-size: 20px; color: #05323a;
+    }
+    .sub { color: var(--text2); font-size: 14px; margin-bottom: 22px; }
+    #err { color: var(--red); font-size: 13px; min-height: 18px; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <div class="card login-card">
+    <div class="brand"><span class="mark">✦</span> Isele</div>
+    <div class="sub">Enter your password to continue.</div>
+    <input type="password" id="pw" class="form-input" placeholder="Password" autocomplete="current-password" autofocus>
+    <button class="btn btn-primary w-full" id="enterBtn" onclick="doLogin()" style="margin-top:14px;">Enter</button>
+    <div id="err"></div>
+  </div>
+
+  <script>
+    // Already signed in? go straight to the app.
+    try { const s = JSON.parse(localStorage.getItem('isele_session') || 'null'); if (s && s.password) location.href = 'app.html'; } catch (_) {}
+
+    const pw = document.getElementById('pw');
+    pw.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+
+    async function doLogin() {
+      const val = pw.value.trim();
+      const err = document.getElementById('err');
+      const btn = document.getElementById('enterBtn');
+      err.textContent = '';
+      if (!val) { err.textContent = 'Enter your password.'; return; }
+      btn.disabled = true; btn.textContent = 'Checking…';
+      try {
+        const res = await fetch('/api/get-key', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: val })
+        });
+        const data = await res.json();
+        if (res.ok && data.key) {
+          localStorage.setItem('isele_session', JSON.stringify({ password: val }));
+          location.href = 'app.html';
+          return;
+        }
+        err.textContent = data.error || 'Wrong password.';
+      } catch (_) {
+        err.textContent = 'Network error. Try again.';
+      }
+      btn.disabled = false; btn.textContent = 'Enter';
+    }
+  </script>
+</body>
+</html>
