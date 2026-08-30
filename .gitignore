@@ -8,3 +8,7 @@ logs/
 laptop/_build/
 laptop/isele-proxy.exe
 laptop/*.log
+
+# never commit the voice engine or bundle staging (huge/stray)
+wokada/
+Isele-dist/
